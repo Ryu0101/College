@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+
+    <link rel="stylesheet" href="uzumaki.css">
+    <link rel="shortcut icon" type="image/x-icon" href="uzumaki.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Finger+Paint&display=swap" rel="stylesheet">
+
+    <script type="module">
+        import {
+            initializeApp
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import {
+            getDatabase,
+            ref,
+            push,
+            set,
+            onValue
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBKjyXrOmtjD5YpHh5l0Zsxg4wB0RQ8fY4",
+            authDomain: "naruto-010105.firebaseapp.com",
+            databaseURL: "https://naruto-010105-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "naruto-010105",
+            storageBucket: "naruto-010105.appspot.com",
+            messagingSenderId: "27699589335",
+            appId: "1:27699589335:web:5629f58ca5e4c9ad6ac092"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const overlay = document.getElementById('overlay');
+        const gameContainer = document.getElementById('gameContainer');
+        const startButton = document.getElementById('startButton');
+
+        startButton.addEventListener('click', () => {
+            overlay.style.display = 'none';
+            gameContainer.style.display = 'flex';
+        });
+
+
+        let playerText = document.getElementById('playerText');
+        let restartBtn = document.getElementById('restartBtn');
+        let boxes = Array.from(document.getElementsByClassName('box'));
+
+        const O_TEXT = "O";
+        const X_TEXT = "X";
+        let currentPlayer = X_TEXT;
+        let spaces = Array(9).fill(null);
+
+        const startGame = () => {
+            boxes.forEach(box => box.addEventListener('click', boxClicked));
+        };
+
+        function boxClicked(e) {
+            const id = e.target.id;
+
+            if (!spaces[id]) {
+                spaces[id] = currentPlayer;
+                e.target.innerText = currentPlayer;
+
+                if (playerHasWon() !== false) {
+                    playerText.innerHTML = `${currentPlayer} has won!`;
+                    let winningBlocks = playerHasWon();
+
+                    winningBlocks.forEach(box => boxes[box].style.backgroundColor = '--winning-blocks');
+
+                    updateWinner(currentPlayer);
+                    return;
+                }
+
+                currentPlayer = currentPlayer == X_TEXT ? O_TEXT: X_TEXT;
+            }
+        }
+
+        const winningCombos = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6]
+        ];
+
+        function playerHasWon() {
+            for (const condition of winningCombos) {
+                let [a,
+                    b,
+                    c] = condition;
+
+                if (spaces[a] && (spaces[a] == spaces[b] && spaces[a] == spaces[c])) {
+                    return [a,
+                        b,
+                        c];
+                }
+            }
+            return false;
+        }
+
+        restartBtn.addEventListener('click', restart);
+
+        function restart() {
+            spaces.fill(null);
+
+            boxes.forEach(box => {
+                box.innerText = '';
+                box.style.backgroundColor = '';
+            });
+
+            playerText.innerHTML = 'Tic Tac Toe';
+
+            currentPlayer = X_TEXT;
+
+            // resetWinner();
+        }
+        function updateWinner(winningPlayer) {
+            const winnersRef = ref(db, 'tic-tac-toe/winners');
+            push(winnersRef, winningPlayer);
+        }
+        /*
+        function resetWinner() {
+            const winnersRef = ref(db, 'tic-tac-toe/winners');
+            set(winnersRef, null);
+        }
+*/
+        function readWinners() {
+            const winnersRef = ref(db, 'tic-tac-toe/winners');
+            onValue(winnersRef, (snapshot) => {
+                const winners = snapshot.val();
+                console.log('Winners:', winners);
+            });
+        }
+
+        startGame();
+    </script>
+</head>
+
+<body>
+    <div id="overlay">
+        <h1>Welcome to TIC TAC TOE!</h1>
+        <p>
+            Press the button below to start the game.
+        </p>
+        <button id="startButton">Start Game</button>
+    </div>
+
+    <div class="container" id="gameContainer" style="display:none;">
+        <h1 id="playerText">Tic Tac Toe</h1>
+        <button id="restartBtn">Restart</button>
+
+        <div id="gameboard">
+            <div class="box" id="0"></div>
+            <div class="box" id="1"></div>
+            <div class="box" id="2"></div>
+            <div class="box" id="3"></div>
+            <div class="box" id="4"></div>
+            <div class="box" id="5"></div>
+            <div class="box" id="6"></div>
+            <div class="box" id="7"></div>
+            <div class="box" id="8"></div>
+        </div>
+    </div>
+</body>
+
+</html>
