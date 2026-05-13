@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Experiment 6 with Particle Background</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+
+  <style>
+    body{
+      position: relative;
+      z-index: 1;
+    }
+
+    .frame3 { background-color: #c2f0c2; }
+    .frame4 { background-color: #ffe0b3; }
+    .frame6 { background-color: #e0ccff; }
+
+    .frame img {
+      width: auto;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .frame p {
+      position: absolute;
+      margin: 0;
+      padding: 5px;
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      font-size: 14px;
+      bottom: 0;
+      width: 100%;
+      text-align: center;
+    }
+
+    .frame {
+      position: relative;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Particle Background -->
+  <div id="Particles"></div>
+
+  <!-- Your actual content -->
+  <h2>Web Page with 6 Styled Frames (Internal & External)</h2>
+  <div class="frame-container">
+    <div class="frame frame1">
+      <img src="img1.png" alt="Image 1">
+      <p>Frame 1</p>
+    </div>
+    <div class="frame frame2">
+      <img src="img2.png" alt="Image 2">
+      <p>Frame 2</p>
+    </div>
+    <div class="frame frame3">
+      <img src="img3.png" alt="Image 3">
+      <p>Frame 3</p>
+    </div>
+    <div class="frame frame4">
+      <img src="img4.png" alt="Image 4">
+      <p>Frame 4</p>
+    </div>
+    <div class="frame frame5">
+      <img src="img5.png" alt="Image 5">
+      <p>Frame 5</p>
+    </div>
+    <div class="frame frame6">
+      <img src="img6.png" alt="Image 6">
+      <p>Frame 6</p>
+    </div>
+  </div>
+
+</body>
+</html>
