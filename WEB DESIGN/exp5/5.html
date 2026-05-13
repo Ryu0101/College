@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Image Pixel Inspector</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      text-align: center;
+      background-color: #222;
+      color: white;
+    }
+    canvas {
+      border: 2px solid white;
+      cursor: crosshair;
+    }
+    #info {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Pixel Color Inspector</h2>
+  <canvas id="canvas"></canvas>
+  <div id="info">Move your cursor on the image...</div>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+
+    // Use your image path here
+    img.src = 'background.jpg'; // Place this image in same folder
+
+    img.onload = function () {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+    };
+
+    canvas.addEventListener('mousemove', function (e) {
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const pixel = ctx.getImageData(x, y, 1, 1).data;
+      const r = pixel[0];
+      const g = pixel[1];
+      const b = pixel[2];
+
+      document.getElementById('info').innerText = 
+        `Position - (X: ${x}, Y: ${y}) | Colour - RGB(${r}, ${g}, ${b})`;
+    });
+  </script>
+
+</body>
+</html>
